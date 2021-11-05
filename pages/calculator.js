@@ -4,23 +4,23 @@ import { useState } from "react";
 const StyledLayout = styled.div`
   display: grid;
   justify-content: center;
-  border: 1px solid black;
 `;
 
-const CalcBoby = styled.div`
+const CalcBody = styled.div`
+  background-color: grey;
   display: grid;
-  padding: 5px;
+  padding: 8px;
   min-height: 500px;
   min-width: 300px;
   grid-template-areas:
     "display display display display"
-    "clear clear pct div"
+    "clear mp pct div"
     "num7 num8 num9 mul"
     "num4 num5 num6 sub"
     "num1 num2 num3 add"
-    "num0 num0 per eq";
-  // gap: 5px;
-  border: 1px solid green;
+    "num0 per del eq";
+  gap: 8px;
+  border-radius: 4px;
 `;
 
 const buttonColors = {
@@ -30,31 +30,39 @@ const buttonColors = {
 
 const CalcButton = styled.button`
   background-color: ${({ color }) => `${color}`};
-  border: lightgrey 1px solid;
-  // border-radius: 16px;
+  border: none;
+  border-radius: 50%;
   transition-duration: 0.2s;
-
+  height: 80px;
+  width: 80px;
   grid-area: ${({ area }) => `${area}`};
+
   :hover {
-    background-color: ${({ color }) => `${color}`};
+    filter: brightness(110%);
   }
-  // :active {
-  //   transform: translateY(1px);
-  // }
+  :active {
+    transition-duration: 0.25s;
+    border-radius: 30%;
+  }
 `;
 
 const Display = styled.div`
-  border: 1px solid brown;
+  height: 140px;
+  display: flexbox;
+  align-items: center;
+  justify-content: center;
+  background-color: ${({ theme }) => `${theme.blue}`};
+  border-radius: 10px;
   grid-area: ${({ area }) => `${area}`};
 `;
-// yellow  hsl(48,95,58)
+
 const Calculator = () => {
-  const [displayValue, setDisplayValue] = useState("");
+  const [displayValue, setDisplayValue] = useState([]);
 
-  console.log({ displayValue });
-
-  const handleClick = (value) => {
-    console.log({ value });
+  const handleClick = (button) => {
+    const { type, value, label, color } = button;
+    if (type === "clear") setDisplayValue([]);
+    else setDisplayValue([...displayValue, value]);
   };
 
   const buttons = [
@@ -62,131 +70,169 @@ const Calculator = () => {
       label: "display",
       value: displayValue || "do maths",
       component: Display,
+      color: buttonColors.blue,
+      type: "display",
     },
     {
       label: "num1",
       value: 1,
       component: CalcButton,
       color: buttonColors.blue,
+      type: "number",
     },
     {
       label: "num2",
       value: 2,
       component: CalcButton,
       color: buttonColors.blue,
+      type: "number",
     },
     {
       label: "num3",
       value: 3,
       component: CalcButton,
       color: buttonColors.blue,
+      type: "number",
     },
     {
       label: "num4",
       value: 4,
       component: CalcButton,
       color: buttonColors.blue,
+      type: "number",
     },
     {
       label: "num5",
       value: 5,
       component: CalcButton,
       color: buttonColors.blue,
+      type: "number",
     },
     {
       label: "num6",
       value: 6,
       component: CalcButton,
       color: buttonColors.blue,
+      type: "number",
     },
     {
       label: "num7",
       value: 7,
       component: CalcButton,
       color: buttonColors.blue,
+      type: "number",
     },
     {
       label: "num8",
       value: 8,
       component: CalcButton,
       color: buttonColors.blue,
+      type: "number",
     },
     {
       label: "num9",
       value: 9,
       component: CalcButton,
       color: buttonColors.blue,
+      type: "number",
     },
     {
       label: "num0",
       value: 0,
       component: CalcButton,
       color: buttonColors.blue,
+      type: "number",
     },
     {
       label: "clear",
       value: "c/e",
       component: CalcButton,
       color: buttonColors.blue,
+      type: "clear",
+    },
+    {
+      label: "mp",
+      value: "\u2213",
+      component: CalcButton,
+      color: buttonColors.blue,
+      type: "operation",
     },
     {
       label: "pct",
-      value: "%",
+      value: "\u0025",
       component: CalcButton,
       color: buttonColors.blue,
+      type: "operation",
     },
     {
       label: "div",
-      value: "/",
+      value: "\u00f7",
       component: CalcButton,
       color: buttonColors.yellow,
+      type: "operation",
     },
     {
       label: "mul",
-      value: "x",
+      value: "\u00d7",
       component: CalcButton,
       color: buttonColors.yellow,
+      type: "operation",
     },
     {
       label: "sub",
-      value: "-",
+      value: "\u2212",
       component: CalcButton,
       color: buttonColors.yellow,
+      type: "operation",
     },
     {
       label: "add",
-      value: "+",
+      value: "\u002B",
       component: CalcButton,
       color: buttonColors.yellow,
+      type: "operation",
     },
     {
       label: "eq",
-      value: "=",
+      value: "\u003D",
       component: CalcButton,
       color: buttonColors.yellow,
+      type: "operation",
     },
     {
       label: "per",
       value: ".",
       component: CalcButton,
       color: buttonColors.blue,
+      type: "float",
+    },
+    {
+      label: "del",
+      // value: "\u2B88",
+      value: "\u140A",
+      component: CalcButton,
+      color: buttonColors.blue,
+      type: "operation",
     },
   ];
 
   return (
     <StyledLayout>
-      <CalcBoby>
-        {buttons.map((button) => (
-          <button.component
-            area={button.label}
-            key={button.label}
-            color={button.color}
-            onClick={() => handleClick(button.value)}
-          >
-            {button.value}
-          </button.component>
-        ))}
-      </CalcBoby>
+      <CalcBody>
+        {buttons.map((button) => {
+          const { color, label, value } = button;
+          return (
+            <button.component
+              area={label}
+              key={label}
+              color={color}
+              onClick={() => handleClick(button)}
+            >
+              {value}
+            </button.component>
+          );
+        })}
+      </CalcBody>
     </StyledLayout>
   );
 };
